@@ -330,9 +330,9 @@ class MacCsmaPPersistent(GenericMac):
 
     def handle_frame(self):
         #TODO: not a good solution put message in queue, schedule a future event to retry yhe first item in queueu
-        print("handle_frame")
+        # print("handle_frame")
         if self.framequeue.qsize() > 0:
-            #print("handle_frame", "queue not empty")
+            print("handle_frame", "queue not empty")
             randval = random.random()
             if randval < self.p: # TODO: Check if correct
                 clearmi, powerdb  = self.ahcuhd.ischannelclear(threshold=-35)
