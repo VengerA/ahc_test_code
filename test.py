@@ -47,11 +47,11 @@ class UsrpApplicationLayerEventTypes(Enum):
 
 
 class UsrpApplicationLayer(GenericModel):
-    def on_init(self, eventobj: GenericEvent):
-        self.counter = 0
+    # def on_init(self, eventobj: GenericEvent):
 
     def __init__(self, componentname, componentid):
         super().__init__(componentname, componentid)
+        self.counter = 0
         self.eventhandlers[UsrpApplicationLayerEventTypes.STARTBROADCAST] = self.on_startbroadcast
 
     def on_message_from_top(self, eventobj: GenericEvent):
