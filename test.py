@@ -1,7 +1,6 @@
 from cgi import print_exception
 import time, random, math
 from enum import Enum
-from tkinter import Frame
 from adhoccomputing import GenericModel, Event, Generics, Definitions, Topology, FramerObjects, FrameHandlerBase, ofdm_callback, MacCsmaPPersistentConfigurationParameters, MacCsmaPPersistent
 from LiquidDsputils import *
 from Uhdutils import *
