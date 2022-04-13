@@ -1,6 +1,6 @@
 image: cengwins/ahc-uhd-image
 command: /bin/sh -c "
-  pip install adhoccomputing==2.0.1 &&
+  pip install adhoccomputing==2.0.1 --no-cache-dir &&
   python3 main.py"
  
   # python3 General/testcomposition.py &&
