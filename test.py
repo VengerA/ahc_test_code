@@ -176,7 +176,7 @@ class FrameHandlerBase(GenericModel):
 
         hdr = UsrpB210PhyMessageHeader(UsrpB210PhyMessageTypes.PHYFRAMEDATA, self.componentinstancenumber, Definitions.MessageDestinationIdentifiers.LINKLAYERBROADCAST)
         pld = UsrpB210PhyMessagePayload(eventobj.eventcontent.header, eventobj.eventcontent.payload )
-        msg = Definitions.GenericMessage(hdr, pld)
+        msg = Generics.GenericMessage(hdr, pld)
         byte_arr_msg = bytearray(pickle.dumps(msg))
         plen = len(byte_arr_msg)
         payload = (c_ubyte * plen)(*(byte_arr_msg))
