@@ -325,6 +325,9 @@ class MacCsmaPPersistent(GenericMac):
         super().on_init(eventobj)  # required because of inheritence
         #print("Initialized", self.componentname, ":", self.componentinstancenumber)
 
+    def send_self(self, event: GenericEvent):
+        self.trigger_event(event)
+
     def handle_frame(self):
         #TODO: not a good solution put message in queue, schedule a future event to retry yhe first item in queueu
         print("handle_frame")
