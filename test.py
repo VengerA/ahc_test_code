@@ -341,6 +341,7 @@ class MacCsmaPPersistent(GenericMac):
                     try:
                         eventobj = self.framequeue.get()
                         evt = GenericEvent(self, Definitions.EventTypes.MFRT, eventobj.eventcontent)
+                        print("wsws")
                         self.send_down(evt)
                         self.retrialcnt = 0
                     except Exception as e:
