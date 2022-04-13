@@ -1,6 +1,6 @@
 image: python:3-alpine
 command: /bin/sh -c "
-  ./env/bin/activate &&
+  pip3 install adhoccomputing==2.0.1 &&
   python3 main.py"
  
   # python3 General/testcomposition.py &&
