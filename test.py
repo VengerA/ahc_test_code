@@ -1,6 +1,6 @@
 import time, random, math
 from enum import Enum
-from adhoccomputing import GenericModel, GenericEvent, Generics as generics, Definitions as definitions, topology
+from adhoccomputing import GenericModel, GenericEvent, Generics as generics, Definitions as definitions, Topology as topology
 from LiquidDsputils import *
 from Uhdutils import *
 from ctypes import *
