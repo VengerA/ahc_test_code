@@ -197,6 +197,9 @@ class UsrpB210OfdmFlexFramePhy(FrameHandlerBase):
         #print("initialize LiquidDspOfdmFlexFrameHandler")
         pass
 
+    def send_self(self, event: GenericEvent):
+        self.trigger_event(event)
+
     def rx_callback(self, num_rx_samps, recv_buffer):
         try:
             #print("Self.fs", self.fs)
