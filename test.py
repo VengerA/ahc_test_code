@@ -1,3 +1,4 @@
+from cgi import print_exception
 import time, random, math
 from enum import Enum
 from adhoccomputing import GenericModel, GenericEvent, Generics, Definitions, Topology
@@ -332,7 +333,6 @@ class MacCsmaPPersistent(GenericMac):
         #TODO: not a good solution put message in queue, schedule a future event to retry yhe first item in queueu
         # print("handle_frame")
         if self.framequeue.qsize() > 0:
-            print("handle_frame", "queue not empty")
             randval = random.random()
             if randval < self.p: # TODO: Check if correct
                 clearmi, powerdb  = self.ahcuhd.ischannelclear(threshold=-35)
@@ -341,11 +341,11 @@ class MacCsmaPPersistent(GenericMac):
                     try:
                         eventobj = self.framequeue.get()
                         evt = GenericEvent(self, Definitions.EventTypes.MFRT, eventobj.eventcontent)
-                        print("wsws")
                         self.send_down(evt)
                         self.retrialcnt = 0
                     except Exception as e:
-                        print("MacCsmaPPersistent handle_frame exception, ", e)
+                        raise(e)
+                        print("MacCsmaPPersistent handle_frame exception, ")
                 else:
                     self.retrialcnt = self.retrialcnt + 1
                     time.sleep(random.randrange(0,math.pow(2,self.retrialcnt))*0.001)
