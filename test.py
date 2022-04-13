@@ -1,6 +1,6 @@
 import time, random, math
 from enum import Enum
-from adhoccomputing import GenericModel, GenericEvent, Generics as generics, Definitions as definitions, Topology as topology
+from adhoccomputing import GenericModel, GenericEvent, Generics, Definitions, Topology
 from LiquidDsputils import *
 from Uhdutils import *
 from ctypes import *
@@ -38,7 +38,7 @@ class ApplicationLayerMessageTypes(Enum):
 
 
 # define your own message header structure
-class ApplicationLayerMessageHeader(generics.GenericMessageHeader):
+class ApplicationLayerMessageHeader(Generics.GenericMessageHeader):
     pass
 
 
@@ -56,10 +56,10 @@ class UsrpApplicationLayer(GenericModel):
 
     def on_message_from_top(self, eventobj: GenericEvent):
     # print(f"I am {self.componentname}.{self.componentinstancenumber},sending down eventcontent={eventobj.eventcontent}\n")
-        self.send_down(GenericEvent(self, definitions.EventTypes.MFRT, eventobj.eventcontent))
+        self.send_down(GenericEvent(self, Definitions.EventTypes.MFRT, eventobj.eventcontent))
 
     def on_message_from_bottom(self, eventobj: GenericEvent):
-        evt = GenericEvent(self, definitions.EventTypes.MFRT, eventobj.eventcontent)
+        evt = GenericEvent(self, Definitions.EventTypes.MFRT, eventobj.eventcontent)
         print(f"I am Node.{self.componentinstancenumber}, received from Node.{eventobj.eventcontent.header.messagefrom} a message: {eventobj.eventcontent.payload}")
         if self.componentinstancenumber == 1:
             evt.eventcontent.header.messageto = 0
@@ -79,8 +79,8 @@ class UsrpApplicationLayer(GenericModel):
         self.counter = self.counter + 1
 
         payload = "BMSG-" + str(self.counter)
-        broadcastmessage = generics.GenericMessage(hdr, payload)
-        evt = GenericEvent(self, definitions.EventTypes.MFRT, broadcastmessage)
+        broadcastmessage = Generics.GenericMessage(hdr, payload)
+        evt = GenericEvent(self, Definitions.EventTypes.MFRT, broadcastmessage)
         # time.sleep(3)
         self.send_down(evt)
         #print("Starting broadcast")
@@ -100,7 +100,7 @@ def ofdm_callback(header:POINTER(c_ubyte), header_valid:c_uint32, payload:POINTE
             pload = string_at(payload, payload_len)
             #print("pload=", pload)
             phymsg = pickle.loads(pload)
-            msg = generics.GenericMessage(phymsg.header, phymsg.payload)
+            msg = Generics.GenericMessage(phymsg.header, phymsg.payload)
             framer.send_self(GenericEvent(framer, UsrpB210PhyEventTypes.RECV, msg))
             #print("Header=", msg.header.messagetype, " Payload=", msg.payload, " RSSI=", stats.rssi)
         #else:
@@ -119,12 +119,12 @@ class UsrpB210PhyEventTypes(Enum):
 
 
 # define your own message header structure
-class UsrpB210PhyMessageHeader(generics.GenericMessageHeader):
+class UsrpB210PhyMessageHeader(Generics.GenericMessageHeader):
     pass
 
 
 # define your own message payload structure
-class UsrpB210PhyMessagePayload(generics.GenericMessagePayload):
+class UsrpB210PhyMessagePayload(Generics.GenericMessagePayload):
 
   def __init__(self, header, payload):
     self.phyheader = header
@@ -156,8 +156,8 @@ class FrameHandlerBase(GenericModel):
         #print("Node", self.componentinstancenumber, " Received message type:", eventobj.eventcontent.header.messagetype, "  from ", eventobj.eventcontent.payload.phyheader.messagefrom)
 
         if eventobj.eventcontent.payload.phyheader.messagefrom != self.componentinstancenumber:
-          msg = generics.GenericMessage(eventobj.eventcontent.payload.phyheader, eventobj.eventcontent.payload.phypayload)
-          self.send_up(GenericEvent(self, definitions.EventTypes.MFRB, msg))
+          msg = Generics.GenericMessage(eventobj.eventcontent.payload.phyheader, eventobj.eventcontent.payload.phypayload)
+          self.send_up(GenericEvent(self, Definitions.EventTypes.MFRB, msg))
 
 
 
@@ -171,9 +171,9 @@ class FrameHandlerBase(GenericModel):
         byte_arr_header = bytearray(str_header, 'utf-8')
         header = (c_ubyte * hlen)(*(byte_arr_header))
 
-        hdr = UsrpB210PhyMessageHeader(UsrpB210PhyMessageTypes.PHYFRAMEDATA, self.componentinstancenumber, definitions.MessageDestinationIdentifiers.LINKLAYERBROADCAST)
+        hdr = UsrpB210PhyMessageHeader(UsrpB210PhyMessageTypes.PHYFRAMEDATA, self.componentinstancenumber, Definitions.MessageDestinationIdentifiers.LINKLAYERBROADCAST)
         pld = UsrpB210PhyMessagePayload(eventobj.eventcontent.header, eventobj.eventcontent.payload )
-        msg = definitions.GenericMessage(hdr, pld)
+        msg = Definitions.GenericMessage(hdr, pld)
         byte_arr_msg = bytearray(pickle.dumps(msg))
         plen = len(byte_arr_msg)
         payload = (c_ubyte * plen)(*(byte_arr_msg))
@@ -295,7 +295,7 @@ class GenericMac(GenericModel):
 
     def on_message_from_bottom(self, eventobj: GenericEvent):
         # print(f"I am {self.componentname}, eventcontent={eventobj.eventcontent}\n")
-        evt = GenericEvent(self, definitions.EventTypes.MFRB, eventobj.eventcontent)
+        evt = GenericEvent(self, Definitions.EventTypes.MFRB, eventobj.eventcontent)
         self.send_up(evt)
 
     def on_message_from_top(self, eventobj: GenericEvent):
@@ -329,7 +329,7 @@ class MacCsmaPPersistent(GenericMac):
                 if  clearmi == True:
                     try:
                         eventobj = self.framequeue.get()
-                        evt = GenericEvent(self, definitions.EventTypes.MFRT, eventobj.eventcontent)
+                        evt = GenericEvent(self, Definitions.EventTypes.MFRT, eventobj.eventcontent)
                         self.send_down(evt)
                         self.retrialcnt = 0
                     except Exception as e:
@@ -360,15 +360,15 @@ class UsrpNode(GenericModel):
         self.mac = MacCsmaPPersistent("MacCsmaPPersistent", componentid,  configurationparameters=macconfig,uhd=self.phy.ahcuhd)
 
         # CONNECTIONS AMONG SUBCOMPONENTS
-        self.appl.connect_me_to_component(definitions.ConnectorTypes.UP, self) #Not required if nodemodel will do nothing
-        self.appl.connect_me_to_component(definitions.ConnectorTypes.DOWN, self.mac)
+        self.appl.connect_me_to_component(Definitions.ConnectorTypes.UP, self) #Not required if nodemodel will do nothing
+        self.appl.connect_me_to_component(Definitions.ConnectorTypes.DOWN, self.mac)
 
-        self.mac.connect_me_to_component(definitions.ConnectorTypes.UP, self.appl)
-        self.mac.connect_me_to_component(definitions.ConnectorTypes.DOWN, self.phy)
+        self.mac.connect_me_to_component(Definitions.ConnectorTypes.UP, self.appl)
+        self.mac.connect_me_to_component(Definitions.ConnectorTypes.DOWN, self.phy)
 
         # Connect the bottom component to the composite component....
-        self.phy.connect_me_to_component(definitions.ConnectorTypes.UP, self.mac)
-        self.phy.connect_me_to_component(definitions.ConnectorTypes.DOWN, self)
+        self.phy.connect_me_to_component(Definitions.ConnectorTypes.UP, self.mac)
+        self.phy.connect_me_to_component(Definitions.ConnectorTypes.DOWN, self)
 
         # self.phy.connect_me_to_component(ConnectorTypes.DOWN, self)
         # self.connect_me_to_component(ConnectorTypes.DOWN, self.appl)
@@ -376,11 +376,11 @@ class UsrpNode(GenericModel):
         super().__init__(componentname, componentid)
 
 def main():
-    topo = topology.Topology()
-# Note that the topology has to specific: usrp winslab_b210_0 is run by instance 0 of the component
+    topo = Topology()
+# Note that the Topology has to specific: usrp winslab_b210_0 is run by instance 0 of the component
 # Therefore, the usrps have to have names winslab_b210_x where x \in (0 to nodecount-1)
-    topo.construct_winslab_topology_without_channels(4, UsrpNode)
-  # topo.construct_winslab_topology_with_channels(2, UsrpNode, FIFOBroadcastPerfectChannel)
+    topo.construct_winslab_Topology_without_channels(4, UsrpNode)
+  # topo.construct_winslab_Topology_with_channels(2, UsrpNode, FIFOBroadcastPerfectChannel)
 
   # time.sleep(1)
   # topo.nodes[0].send_self(Event(topo.nodes[0], UsrpNodeEventTypes.STARTBROADCAST, None))
