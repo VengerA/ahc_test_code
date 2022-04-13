@@ -304,7 +304,7 @@ class GenericMac(GenericModel):
         self.send_up(evt)
 
     def on_message_from_top(self, eventobj: GenericEvent):
-        print(f"I am {self.componentname}, eventcontent={eventobj.eventcontent}\n")
+        # print(f"I am {self.componentname}, eventcontent={eventobj.eventcontent}\n")
         # put message in queue and try accessing the channel
         # self.on_handlemacframe(eventobj)
         self.framequeue.put_nowait(eventobj)
@@ -342,7 +342,6 @@ class MacCsmaPPersistent(GenericMac):
                     try:
                         eventobj = self.framequeue.get()
                         evt = GenericEvent(self, Definitions.EventTypes.MFRT, eventobj.eventcontent)
-                        print(self.connectors)
                         self.send_down(evt)
                         self.retrialcnt = 0
                     except Exception as e:
