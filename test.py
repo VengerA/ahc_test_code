@@ -191,8 +191,6 @@ class FrameHandlerBase(GenericModel):
 
 class UsrpB210PhyMessageTypes(Enum):
   PHYFRAMEDATA = "PHYFRAMEDATA"
-
-
 class UsrpB210OfdmFlexFramePhy(FrameHandlerBase):
 
     def on_init(self, eventobj: GenericEvent):
@@ -341,6 +339,7 @@ class MacCsmaPPersistent(GenericMac):
                     try:
                         eventobj = self.framequeue.get()
                         evt = GenericEvent(self, Definitions.EventTypes.MFRT, eventobj.eventcontent)
+                        print(self.connectors)
                         self.send_down(evt)
                         self.retrialcnt = 0
                     except Exception as e:
