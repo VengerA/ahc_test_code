@@ -1,0 +1,23 @@
+image: cengwins/ahc-uhd-image
+command: /bin/sh -c "
+  pip install adhoccomputing==2.0.1 &&
+  python3 main.py"
+ 
+  # python3 General/testcomposition.py &&
+  # python3 General/test.py &&
+  # python3 General/testnx.py &&
+  # python3 General/testchannels.py &&
+  # python3 Broadcasting/testbroadcasting.py &&
+  # python3 Clocks/testlogicalclock.py &&
+  # python3 Consensus/testChandraConsensus.py &&
+  # python3 Consensus/testpaxosconsensus.py &&
+  # python3 Consensus/testraftconsensus.py &&
+  # python3 Election/testElectionSpira.py &&
+  # python3 Election/testElectionEchoExtinction.py &&
+  # python3 MutualExclusion/testBakery.py &&
+  # python3 MutualExclusion/testPeterson.py &&
+  # python3 Routing/testDSR.py &&
+
+env:
+  PYTHONUNBUFFERED: "1"
+  PYTHONDONTWRITEBYTECODE: "1"
