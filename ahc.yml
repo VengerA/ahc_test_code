@@ -1,6 +1,6 @@
-image: python:3-alpine
+image: cengwins/ahc-uhd-image
 command: /bin/sh -c "
-  pip3 install adhoccomputing==2.0.1 &&
+  pip3 install --no-cache-dir adhoccomputing==2.0.1 &&
   python3 main.py"
  
   # python3 General/testcomposition.py &&
