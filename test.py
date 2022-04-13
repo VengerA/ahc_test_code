@@ -85,6 +85,9 @@ class UsrpApplicationLayer(GenericModel):
         self.send_down(evt)
         #print("Starting broadcast")
 
+    def send_self(self, event: GenericEvent):
+        self.trigger_event(event)
+
 mutex = Lock()
 def ofdm_callback(header:POINTER(c_ubyte), header_valid:c_uint32, payload:POINTER(c_ubyte), payload_len:c_uint32, payload_valid:c_int32, stats:struct_c__SA_framesyncstats_s, userdata:POINTER(None)):
     mutex.acquire(1)
