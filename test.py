@@ -83,7 +83,7 @@ class UsrpApplicationLayer(GenericModel):
         evt = GenericEvent(self, Definitions.EventTypes.MFRT, broadcastmessage)
         # time.sleep(3)
         self.send_down(evt)
-        #print("Starting broadcast")
+        print("Starting broadcast")
 
     def send_self(self, event: GenericEvent):
         self.trigger_event(event)
