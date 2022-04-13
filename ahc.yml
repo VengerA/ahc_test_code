@@ -1,4 +1,4 @@
-image: cengwins/ahc-uhd-image
+image: python:3-alpine
 command: /bin/sh -c "
   ./env/bin/activate &&
   python3 main.py"
