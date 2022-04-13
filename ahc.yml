@@ -1,6 +1,6 @@
 image: cengwins/ahc-uhd-image
 command:
-  pip3 install adhoccomputing==2.0.2 && python3 test.py
+  pip3 install adhoccomputing==2.0.3 && python3 test.py
 
   # python3 General/testcomposition.py &&
   # python3 General/test.py &&
