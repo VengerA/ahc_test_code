@@ -83,7 +83,6 @@ class UsrpApplicationLayer(GenericModel):
         evt = GenericEvent(self, Definitions.EventTypes.MFRT, broadcastmessage)
         # time.sleep(3)
         self.send_down(evt)
-        print("Starting broadcast")
 
     def send_self(self, event: GenericEvent):
         self.trigger_event(event)
@@ -286,9 +285,10 @@ class GenericMac(GenericModel):
         print("I am Generic MAC my uhd instance id is ", self.ahcuhd.componentinstancenumber)
         self.eventhandlers[GenericMacEventTypes.HANDLEMACFRAME] = self.on_handlemacframe
 
+
     def on_init(self, eventobj: GenericEvent):
         self.send_self(GenericEvent(self, GenericMacEventTypes.HANDLEMACFRAME, None))  # Continuously trigger handle_frame
-        # print("Initialized", self.componentname, ":", self.componentinstancenumber)
+        print("Initialized", self.componentname, ":", self.componentinstancenumber)
 
     def on_handlemacframe(self, eventobj: GenericEvent):
         # print("will handle frame from on_handlemacframe")
@@ -302,10 +302,15 @@ class GenericMac(GenericModel):
         self.send_up(evt)
 
     def on_message_from_top(self, eventobj: GenericEvent):
-        # print(f"I am {self.componentname}, eventcontent={eventobj.eventcontent}\n")
+        print(f"I am {self.componentname}, eventcontent={eventobj.eventcontent}\n")
         # put message in queue and try accessing the channel
+        # self.on_handlemacframe(eventobj)
         self.framequeue.put_nowait(eventobj)
+        self.handle_frame()
         #print("Mac put the frame in queueu", eventobj.eventcontent.payload)
+
+    def handle_frame(self):
+        pass
 
 class MacCsmaPPersistent(GenericMac):
 
@@ -322,7 +327,7 @@ class MacCsmaPPersistent(GenericMac):
 
     def handle_frame(self):
         #TODO: not a good solution put message in queue, schedule a future event to retry yhe first item in queueu
-        #print("handle_frame")
+        print("handle_frame")
         if self.framequeue.qsize() > 0:
             #print("handle_frame", "queue not empty")
             randval = random.random()
