@@ -2,8 +2,6 @@ from cgi import print_exception
 import time, random, math
 from enum import Enum
 from adhoccomputing import GenericModel, Event, Generics, Definitions, Topology, FramerObjects, FrameHandlerBase, ofdm_callback, MacCsmaPPersistentConfigurationParameters, MacCsmaPPersistent, UsrpB210OfdmFlexFramePhy
-from LiquidDsputils import *
-from Uhdutils import *
 from ctypes import *
 import queue
 import pickle
@@ -18,7 +16,7 @@ class ApplicationLayerMessageTypes(Enum):
 class ApplicationLayerMessageHeader(Generics.GenericMessageHeader):
     pass
 
-
+# define your own EventTypes 
 class UsrpApplicationLayerEventTypes(Enum):
     STARTBROADCAST = "startbroadcast"
 
@@ -29,6 +27,7 @@ class UsrpApplicationLayer(GenericModel):
     def __init__(self, componentname, componentid):
         super().__init__(componentname, componentid)
         self.counter = 0
+        # Event handler uses Eventypes to Call Proper Events from other layers or trigger events 
         self.eventhandlers[UsrpApplicationLayerEventTypes.STARTBROADCAST] = self.on_startbroadcast
 
     def on_message_from_top(self, eventobj: Event):
@@ -60,20 +59,6 @@ class UsrpApplicationLayer(GenericModel):
         evt = Event(self, Definitions.EventTypes.MFRT, broadcastmessage)
         # time.sleep(3)
         self.send_down(evt)
-
-
-
-# define your own message header structure
-class UsrpB210PhyMessageHeader(Generics.GenericMessageHeader):
-    pass
-
-
-# define your own message payload structure
-class UsrpB210PhyMessagePayload(Generics.GenericMessagePayload):
-
-  def __init__(self, header, payload):
-    self.phyheader = header
-    self.phypayload = payload
 
 class UsrpNode(GenericModel):
     counter = 0
