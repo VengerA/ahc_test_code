@@ -1,20 +1,12 @@
+# This image contains uhd packahes and more which is essential for USRP Devices. 
+# You can edit this yaml file, change the commands, add more env variables etc. 
+# However, please be carefull about the version of adhoccomputing package and image name. 
+# Usually, when we generate new version of adhoccomputing library, we generate new ahc-uhd-image for that version.
+# If you are using latest version of adhoccomputing library then probably it wont be problem. However, since we are 
+# currently developing our system every day, there might be problems as a result, installing the latest version of
+# adhoccomputing library is always guarantee for simulation. 
 image: cengwins/ahc-uhd-image
 command: pip install adhoccomputing==2.0.13 --no-cache-dir && python3 test.py
-
-  # python3 General/testcomposition.py &&
-  # python3 General/test.py &&
-  # python3 General/testnx.py &&
-  # python3 General/testchannels.py &&
-  # python3 Broadcasting/testbroadcasting.py &&
-  # python3 Clocks/testlogicalclock.py &&
-  # python3 Consensus/testChandraConsensus.py &&
-  # python3 Consensus/testpaxosconsensus.py &&
-  # python3 Consensus/testraftconsensus.py &&
-  # python3 Election/testElectionSpira.py &&
-  # python3 Election/testElectionEchoExtinction.py &&
-  # python3 MutualExclusion/testBakery.py &&
-  # python3 MutualExclusion/testPeterson.py &&
-  # python3 Routing/testDSR.py &&
 
 env:
   PYTHONUNBUFFERED: "1"
